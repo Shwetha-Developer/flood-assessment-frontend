@@ -1,55 +1,68 @@
-# Flood Assessment App — Frontend
+# Flood Assessment App — Frontend PWA
 
-Progressive Web App (PWA) for field assessors to record 
-flood damage at chicken farms in Madison County, NC.
+Progressive Web App for field assessors to record flood damage
+at chicken farms in Madison County, NC. Built for Ceres.
 
 ## Tech Stack
-- React 18 + Vite
-- Tailwind CSS
-- Dexie.js (IndexedDB offline storage)
+- React 18 + Vite 8
+- Tailwind CSS v4
+- Dexie.js (IndexedDB — offline storage)
 - Axios (API calls)
 - React Router v6
-- PWA (Service Worker + Web Manifest)
+- vite-plugin-pwa (Service Worker)
 
-## Key Features
-- Works fully offline (PWA)
-- GPS location auto-detection
-- Photo capture from camera
-- Automatic sync when internet returns
-- Role-based views (Assessor / Supervisor)
-- CSV export for supervisor
-
-## Setup Instructions
-
-### Requirements
+## Requirements
 - Node.js 18+
 - npm
+- Backend API running on localhost:8000
 
-### Installation
+## Installation & Setup
 
-1. Clone the repository
+### Step 1 — Clone Repository
 ```bash
-   git clone https://github.com/YOUR_USERNAME/flood-assessment-frontend.git
-   cd flood-assessment-frontend
+git clone https://github.com/Shwetha-Developer/flood-assessment-frontend.git
+cd flood-assessment-frontend
 ```
 
-2. Install dependencies
+### Step 2 — Install Dependencies
 ```bash
-   npm install --legacy-peer-deps
+npm install --legacy-peer-deps
 ```
 
-3. Configure environment
-```bash
-   cp .env.example .env
-```
-   Update `.env`:
+### Step 3 — Configure Environment
+Create `.env` file in root:
 ```env
-   VITE_API_URL=http://127.0.0.1:8000/api
+VITE_API_URL=http://127.0.0.1:8000/api
 ```
 
-4. Start development server
+### Step 4 — Start Development Server
 ```bash
-   npm run dev
+npm run dev
+```
+App runs at: `http://localhost:3000`
+
+### Step 5 — Make Sure Backend is Running
+```bash
+# In separate terminal
+cd flood-assessment-backend
+php artisan serve
 ```
 
-5. Open browser
+## Login Credentials
+
+| Role | Email | Password |
+|------|-------|----------|
+| Supervisor | supervisor@ceres.com | password123 |
+| Assessor | assessor@ceres.com | password123 |
+
+## Application Pages
+
+| Page | Route | Role | Description |
+|------|-------|------|-------------|
+| Login | /login | All | Email/password login |
+| Dashboard | / | Assessor | Home + sync status |
+| New Assessment | /new-assessment | Assessor | Record farm damage |
+| My Records | /assessments | Assessor | View own records |
+| Supervisor Dashboard | /supervisor | Supervisor | All farms + export |
+
+## How Offline Works

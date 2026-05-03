@@ -22,7 +22,21 @@ export default function DashboardPage() {
   useEffect(() => {
     loadData()
   }, [])
+// Listen for auto sync completion
+useEffect(() => {
+  const handleSyncComplete = async () => {
+    console.log('Sync complete — refreshing data!')
+    await loadData()
+    setSyncMessage('Auto synced! ✅')
+    setTimeout(() => setSyncMessage(''), 3000)
+  }
 
+  window.addEventListener('syncComplete', handleSyncComplete)
+
+  return () => {
+    window.removeEventListener('syncComplete', handleSyncComplete)
+  }
+}, [])
   const loadData = async () => {
     const count = await getPendingCount()
     setPendingCount(count)

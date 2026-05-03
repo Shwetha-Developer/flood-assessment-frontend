@@ -145,48 +145,54 @@ const compressImage = (file) => {
 }
 
   const handleSave = async () => {
-    if (!validate()) return
-    setSaving(true)
+  if (!validate()) return
+  setSaving(true)
 
-    try {
-      const localId = uuidv4()
+  try {
+    const localId = uuidv4()
 
-      await db.assessments.add({
-        local_id: localId,
-        latitude: parseFloat(form.latitude),
-        longitude: parseFloat(form.longitude),
-        address: form.address,
-        condition: form.condition,
-        total_chickens: parseInt(form.total_chickens),
-        notes: form.notes,
-        assessed_at: new Date().toISOString(),
-        synced: 0,
-        created_at: new Date().toISOString()
+    await db.assessments.add({
+      local_id: localId,
+      latitude: parseFloat(form.latitude),
+      longitude: parseFloat(form.longitude),
+      address: form.address,
+      condition: form.condition,
+      total_chickens: parseInt(form.total_chickens),
+      notes: form.notes,
+      assessed_at: new Date().toISOString(),
+      synced: 0,
+      created_at: new Date().toISOString()
+    })
+
+    if (photos.length > 0) {
+      await db.photos.add({
+        local_id: photos[0].local_id,
+        assessmentLocalId: localId,
+        base64: photos[0].base64,
+        synced: 0
       })
-
-      for (let photo of photos) {
-        await db.photos.add({
-          local_id: photo.local_id,
-          assessmentLocalId: localId,
-          base64: photo.base64,
-          synced: 0
-        })
-      }
-
-      setSaved(true)
-
-      if (isOnline) {
-        await syncAll()
-      }
-
-      setTimeout(() => navigate('/'), 1500)
-
-    } catch (error) {
-      console.error('Save error:', error)
-    } finally {
-      setSaving(false)
     }
+
+    setSaved(true)
+
+    // Auto sync immediately if online
+    if (isOnline) {
+      console.log('Online — syncing immediately!')
+      await syncAll()
+      console.log('Immediate sync done!')
+    } else {
+      console.log('Offline — will sync when online')
+    }
+
+    setTimeout(() => navigate('/'), 1500)
+
+  } catch (error) {
+    console.error('Save error:', error)
+    alert('Error saving: ' + error.message)
+  } finally {
+    setSaving(false)
   }
+}
 
   if (saved) {
     return (
